@@ -17,10 +17,8 @@ class LabVariable:
         else:
             data2 = other
 
-        try:
-            return LabVariable(data1+data2)
-        except Exception:
-            raise TypeError("Data types incompatible")
+        return LabVariable(data1+data2)
+
 
     # LabberFile could decide which autolabel to use (if any) by
     # looking at the units of the variable
