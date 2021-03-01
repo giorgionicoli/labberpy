@@ -12,11 +12,12 @@ class Label:
         self.plotgain = plotgain
 
     def __repr__(self):
-        pass
+        return "Label()"
 
     @classmethod
     def autolabel(cls, autolabel: str = "", plotgain: float = 1.0):
-        # should this method call the proper classmethod?
+        # should this method call the proper classmethod? or assign
+        # the proper method to a variable?
         pass
 
     @classmethod
