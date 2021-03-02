@@ -2,7 +2,7 @@ import h5py as h5
 import numpy as np
 import re
 
-from labdata import LabVariable
+from labvar import LabVar
 
 
 class LabberFile:
