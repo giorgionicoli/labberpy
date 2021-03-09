@@ -1,14 +1,16 @@
 import h5py as h5
 import numpy as np
-import re
-
-from labvar import LabVar
 
 
 class LabberFile:
     def __init__(self, file_name: str, path: str = ""):
         """still missing custom path choice"""
         self._h5handle = h5.File(file_name)
+        self.metadata = {"file": self._h5handle.filename}
+        self._initVariables()
+        self._initRawData()
+
+    def _initVariables(self) -> None:
         logged: dict = {
             var[0].decode(): {"type": "log"}
             for var in self._h5handle["Log list"]
@@ -23,17 +25,34 @@ class LabberFile:
             for var in list(self._h5handle["Step list"])
             if var[0].decode() not in stepped
         }
-        self._variables = stepped | fixed | logged
-        self._initMetadata()
+        self.variables = stepped | fixed | logged
+        self._initVarInfo()
 
-    def _initMetadata(self) -> None:
+    def _initVarInfo(self) -> None:
+
+        steps = dict(
+            zip(
+                [x[0].decode() for x in self._h5handle["Step list"]],
+                list(self._h5handle.attrs["Step dimensions"]),
+            )
+        )
+
+        self.metadata["sweep_dimension"] = len(
+            [x for x in steps.values() if x > 1]
+        )
+
+        channels = {
+            name[0].decode(): i
+            for i, name in enumerate(self._h5handle["Data/Channel names"])
+        }
 
         for var_info in self._h5handle["Channels"]:
 
             var_name = var_info[0].decode()
 
-            if var_name in self._variables.keys():
+            if var_name in self.variables.keys():
 
+                id_num = channels.get(var_name, None)
                 instr_name = var_info[1].decode()
                 channel_name = var_info[2].decode()
                 phys_unit = var_info[3].decode()
@@ -41,6 +60,7 @@ class LabberFile:
                 instr_gain = var_info[5]
                 instr_offset = var_info[6]
                 instr_ampl = var_info[7]
+                step = steps.get(var_name, 0)
 
                 path = "Instrument config/" + instr_name
                 instr_value = self._h5handle[path].attrs[channel_name]
@@ -52,8 +72,9 @@ class LabberFile:
                 else:
                     phys_value = ""
 
-                self._variables[var_name].update(
+                self.variables[var_name].update(
                     {
+                        "id": id_num,
                         "instr_name": instr_name,
                         "channel_name": channel_name,
                         "phys_unit": phys_unit,
@@ -63,8 +84,12 @@ class LabberFile:
                         "instr_ampl": instr_ampl,
                         "instr_value": instr_value,
                         "phys_value": phys_value,
+                        "steps": step,
                     }
                 )
+    
+    def _initRawData(self) -> None:
+        pass
 
 
 '''class LabberFile():
@@ -237,20 +262,4 @@ class LabberFile:
     def _guessPlotGain(data: 'some form of data to base the guess on') -> float:
         """doc-string"""
         pass
-
-
-class LabData():
-
-    def __init__(self, data: 'np.ndarray',
-                 variable_name: str = '', symbol: str = '',
-                 unit: str = '', plot_gain: float = 1.0,
-                 tags: set = set(),
-                 **kwargs):
-        self.data = data
-        self.attrs = {'variable_name': variable_name,
-                      'symbol': symbol,
-                      'unit': unit,
-                      'plot_gain': plot_gain,
-                      'tags': tags}
-        self.exp_param = dict()
 '''
