@@ -5,11 +5,13 @@ class Label:
         symbol: str = "",
         units: str = "",
         plotgain: float = 1.0,
+        abbreviated: bool = True
     ):
         self.quantity = quantity
         self.symbol = symbol
         self.units = units
         self.plotgain = plotgain
+        self.abbreviated = abbreviated
 
     def __repr__(self):
         return "Label()"

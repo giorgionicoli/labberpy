@@ -37,9 +37,9 @@ class LabberFile:
             )
         )
 
-        self.metadata["sweep_dimension"] = len(
-            [x for x in steps.values() if x > 1]
-        )
+        self.metadata["steps_list"] = tuple(x for x in steps.values() if x > 1)
+
+        self.metadata["sweep_dimension"] = len(self.metadata["steps_list"])
 
         channels = {
             name[0].decode(): i
@@ -87,9 +87,42 @@ class LabberFile:
                         "steps": step,
                     }
                 )
-    
+
     def _initRawData(self) -> None:
-        pass
+        """doc-string"""
+
+        data: np.ndarray = np.array(self._h5handle["Data/Data"])
+        if self.metadata["sweep_dimension"] == 1:
+            new_shape = self.metadata["steps_list"][0]
+        elif self.metadata["sweep_dimension"] > 2:
+            steps_list = self.metadata["steps_list"]
+            new_shape = (
+                steps_list[0],
+                steps_list[1],
+                (data.shape[2] / steps_list[1]).astype(int),
+            )
+        elif self.metadata["sweep_dimension"] == 2:
+            new_shape = data[:, 0, :].shape
+
+        for k, var in self.variables.items():
+
+            var_id = var["id"]
+
+            if var_id is None:
+                continue
+
+            self.variables[k]["raw_data"] = data[:, var_id, :].reshape(
+                new_shape, order="F"
+            )
+
+    def get_phys_data(self, var_name):
+        var = self.variables.get(var_name, None)
+        if var is not None:
+            gain = var["instr_gain"]
+            offset = var["instr_offset"]
+            ampl = var["instr_ampl"]
+            data = var["raw_data"]
+            return (data / ampl - offset) / gain
 
 
 '''class LabberFile():
