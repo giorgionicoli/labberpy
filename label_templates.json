@@ -18,5 +18,42 @@
         "name": "Resistance",
         "symbol": "R",
         "unit": "$\\Omega$"
+    },
+    "s": {
+        "name": "Time",
+        "symbol": "T",
+        "unit": "s"
+    },
+    "Lbg": {
+        "prefix": "Barrier Gate",
+        "subscript": "LBG"
+    },
+    "Mbg": {
+        "prefix": "Barrier Gate",
+        "subscript": "MBG"
+    },
+    "Rbg": {
+        "prefix": "Barrier Gate",
+        "subscript": "RBG"
+    },
+    "Backgate": {
+        "prefix": "Backgate",
+        "subscript": "BG"
+    },
+    "Ac": {
+        "prefix": "Excitation",
+        "subscript": "AC"
+    },
+    "2t": {
+        "prefix": "Two-terminal",
+        "subscript": "2T"
+    },
+    "Xy": {
+        "prefix": "Transverse",
+        "subscript": "XY"
+    },
+    "Xx": {
+        "prefix": "Longitudinal",
+        "subscript": "XX"
     }
 }
