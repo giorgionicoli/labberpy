@@ -18,6 +18,7 @@ class DataExtractor:
             unit = self._labber_file.variables[var_name]["phys_unit"]
             label = Labeler()._autolabel(var_name, unit)
             data_out.append(LabVar(data, label))
+        return data_out
 
 
 class Labeler:
