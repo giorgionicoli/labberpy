@@ -1,45 +1,20 @@
 class Label:
     def __init__(
         self,
-        quantity: str = "",
+        name: str = "",
         symbol: str = "",
-        units: str = "",
-        plotgain: float = 1.0,
-        abbreviated: bool = True
+        unit: str = "",
     ):
-        self.quantity = quantity
+        self.name = name
         self.symbol = symbol
-        self.units = units
-        self.plotgain = plotgain
-        self.abbreviated = abbreviated
+        self.unit = unit
+
+    @property
+    def label(self):
+        return fr"{self.name} {self.symbol} ({self.unit})"
 
     def __repr__(self):
-        return "Label()"
+        return fr"Label('{self.name}', '{self.symbol}', '{self.unit}')"
 
-    @classmethod
-    def autolabel(cls, autolabel: str = "", plotgain: float = 1.0):
-        # should this method call the proper classmethod? or assign
-        # the proper method to a variable?
-        pass
-
-    @classmethod
-    def tesla(cls, plotgain: float = 1.0):
-        label_pieces = {
-            "quantity": "Magnetic Field",
-            "symbol": "$B$",
-            "units": "T",
-            "plotgain": plotgain,
-        }
-        return cls(**label_pieces)
-
-    @classmethod
-    def volt(cls):
-        pass
-
-    @classmethod
-    def ohm(cls):
-        pass
-
-    @classmethod
-    def ampere(cls):
-        pass
+    def __str__(self):
+        return self.label

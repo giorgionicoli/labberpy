@@ -1,0 +1,22 @@
+{
+    "V": {
+        "name": "Voltage",
+        "symbol": "V",
+        "unit": "V"
+    },
+    "T": {
+        "name": "Magnetic Field",
+        "symbol": "B",
+        "unit": "T"
+    },
+    "A": {
+        "name": "Current",
+        "symbol": "I",
+        "unit": "A"
+    },
+    "Ohm": {
+        "name": "Resistance",
+        "symbol": "R",
+        "unit": "$\\Omega$"
+    }
+}
