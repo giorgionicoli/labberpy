@@ -3,8 +3,7 @@ import numpy as np
 
 
 class LabberFile:
-    def __init__(self, file_name: str, path: str = ""):
-        """still missing custom path choice"""
+    def __init__(self, file_name: str):
         self._h5handle = h5.File(file_name)
         self.metadata = {"file": self._h5handle.filename}
         self._initVariables()
