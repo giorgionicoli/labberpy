@@ -98,7 +98,6 @@ class Labeler:
             print(
                 f"Labeler.label_from_template() Exception: "
                 f"arguments passed to Label() object not correct.\n"
-                f"Continuing with empty Label() object "
-                f"for variable --> {var_name}"
+                f"An empty Label() object has been returned."
             )
         return Label()
