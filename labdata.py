@@ -10,6 +10,7 @@ from labels import Label
 
 
 BASE_PATH = ""
+LABBER_STANDARD_DATABASE = True
 
 
 class DataExtractor:
@@ -26,7 +27,9 @@ class DataExtractor:
                 return
 
         if BASE_PATH:
-            file_path = BASE_PATH + r"/2*/*/*/"
+            file_path = BASE_PATH
+            if LABBER_STANDARD_DATABASE:
+                file_path += r"/2*/*/*/"
         else:
             file_path = ""
 
@@ -70,9 +73,10 @@ class Labeler:
             var_parse = re.match(
                 label_info["symbol"] + r"_?([a-zA-Z0-9]+)", var_name
             )
-            label_info.update(
-                self._label_templates.get(var_parse.group(1).title(), {})
-            )
+            if var_parse:
+                label_info.update(
+                    self._label_templates.get(var_parse.group(1).title(), {})
+                )
             try:
                 return Label(**label_info)
             except Exception:
@@ -82,4 +86,19 @@ class Labeler:
                     f"Continuing with empty Label() object "
                     f"for variable --> {var_name}"
                 )
+        return Label()
+
+    def label_from_template(self, *keys: List[str]):
+        label_info = dict()
+        for key in keys:
+            label_info.update(self._label_templates.get(key, None))
+        try:
+            return Label(**label_info)
+        except Exception:
+            print(
+                f"Labeler.label_from_template() Exception: "
+                f"arguments passed to Label() object not correct.\n"
+                f"Continuing with empty Label() object "
+                f"for variable --> {var_name}"
+            )
         return Label()

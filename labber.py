@@ -91,6 +91,7 @@ class LabberFile:
         """doc-string"""
 
         data: np.ndarray = np.array(self._h5handle["Data/Data"])
+        '''
         if self.metadata["sweep_dimension"] == 1:
             new_shape = self.metadata["steps_list"][0]
         elif self.metadata["sweep_dimension"] > 2:
@@ -102,6 +103,9 @@ class LabberFile:
             )
         elif self.metadata["sweep_dimension"] == 2:
             new_shape = data[:, 0, :].shape
+        '''
+
+        new_shape = self.metadata["steps_list"]
 
         for k, var in self.variables.items():
 
@@ -120,5 +124,8 @@ class LabberFile:
             gain = var["instr_gain"]
             offset = var["instr_offset"]
             ampl = var["instr_ampl"]
-            data = var["raw_data"]
-            return (data / ampl - offset) / gain
+            data = var.get("raw_data", None)
+            if data is not None:
+                return (data / ampl - offset) / gain
+            else:
+                return var["phys_value"]

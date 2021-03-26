@@ -24,6 +24,12 @@
         "symbol": "T",
         "unit": "s"
     },
+    "mu_norm": {
+        "name": "Electrochemical Potential",
+        "symbol": "\\mu_{ch}/\\mu_{S}",
+        "unit": "a.u.",
+        "prefix": "Normalized"
+    },
     "Lbg": {
         "prefix": "Barrier Gate",
         "subscript": "LBG"
