@@ -30,6 +30,12 @@
         "unit": "a.u.",
         "prefix": "Normalized"
     },
+    "mu_ch": {
+        "name": "Potential",
+        "symbol": "\\mu_{ch}",
+        "unit": "a.u.",
+        "prefix": "Channel"
+    },
     "Lbg": {
         "prefix": "Barrier Gate",
         "subscript": "LBG"
