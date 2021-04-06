@@ -34,7 +34,9 @@ class DataExtractor:
             file_path = ""
 
         try:
-            file_path = os.path.abspath(glob.glob(file_path + file_name)[0])
+            file_path = os.path.abspath(
+                glob.glob(os.path.join(file_path, file_name))[0]
+            )
             self._labber_file = LabberFile(file_path)
         except Exception:
             print(
