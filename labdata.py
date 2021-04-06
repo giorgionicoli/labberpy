@@ -56,7 +56,7 @@ class DataExtractor:
 
 class Labeler:
     _label_templates = {}
-    _label_templates_file = (
+    _label_templates_file = os.path.abspath(
         "/".join(__file__.split("/")[:-1]) + "/label_templates.json"
     )
 
