@@ -56,14 +56,17 @@ class DataExtractor:
 
 class Labeler:
     _label_templates = {}
+    _label_templates_file = (
+        "/".join(__file__.split("/")[:-1]) + "/label_templates.json"
+    )
 
-    def __init__(self, json_path: str = "label_templates.json"):
+    def __init__(self, json_path: str = _label_templates_file):
         try:
             with open(json_path) as json_file:
                 self._label_templates.update(json.load(json_file))
         except Exception:
             print(
-                f"Labeler.__init__() Exception: Json file not found."
+                f"Labeler.__init__() Exception: Json file not found. "
                 f"Continuing without updating _label_templates."
             )
 

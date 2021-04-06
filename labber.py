@@ -2,6 +2,12 @@ import h5py as h5
 import numpy as np
 
 
+def _decode_if_necessary(input_):
+    if isinstance(input_, bytes):
+        return input_.decode()
+    return input_
+
+
 class LabberFile:
     def __init__(self, file_name: str):
         self._h5handle = h5.File(file_name)
@@ -11,18 +17,18 @@ class LabberFile:
 
     def _initVariables(self) -> None:
         logged: dict = {
-            var[0].decode(): {"type": "log"}
+            _decode_if_necessary(var[0]): {"type": "log"}
             for var in self._h5handle["Log list"]
         }
         stepped: dict = {
-            var[0].decode(): {"type": "step"}
+            _decode_if_necessary(var[0]): {"type": "step"}
             for var in list(self._h5handle["Data/Channel names"])
-            if var[0].decode() not in logged
+            if _decode_if_necessary(var[0]) not in logged
         }
         fixed: dict = {
-            var[0].decode(): {"type": "fixed"}
+            _decode_if_necessary(var[0]): {"type": "fixed"}
             for var in list(self._h5handle["Step list"])
-            if var[0].decode() not in stepped
+            if _decode_if_necessary(var[0]) not in stepped
         }
         self.variables = stepped | fixed | logged
         self._initVarInfo()
@@ -31,7 +37,10 @@ class LabberFile:
 
         steps = dict(
             zip(
-                [x[0].decode() for x in self._h5handle["Step list"]],
+                [
+                    _decode_if_necessary(x[0])
+                    for x in self._h5handle["Step list"]
+                ],
                 list(self._h5handle.attrs["Step dimensions"]),
             )
         )
@@ -41,21 +50,21 @@ class LabberFile:
         self.metadata["sweep_dimension"] = len(self.metadata["steps_list"])
 
         channels = {
-            name[0].decode(): i
+            _decode_if_necessary(name[0]): i
             for i, name in enumerate(self._h5handle["Data/Channel names"])
         }
 
         for var_info in self._h5handle["Channels"]:
 
-            var_name = var_info[0].decode()
+            var_name = _decode_if_necessary(var_info[0])
 
             if var_name in self.variables.keys():
 
                 id_num = channels.get(var_name, None)
-                instr_name = var_info[1].decode()
-                channel_name = var_info[2].decode()
-                phys_unit = var_info[3].decode()
-                instr_unit = var_info[4].decode()
+                instr_name = _decode_if_necessary(var_info[1])
+                channel_name = _decode_if_necessary(var_info[2])
+                phys_unit = _decode_if_necessary(var_info[3])
+                instr_unit = _decode_if_necessary(var_info[4])
                 instr_gain = var_info[5]
                 instr_offset = var_info[6]
                 instr_ampl = var_info[7]
@@ -91,7 +100,7 @@ class LabberFile:
         """doc-string"""
 
         data: np.ndarray = np.array(self._h5handle["Data/Data"])
-        '''
+        """
         if self.metadata["sweep_dimension"] == 1:
             new_shape = self.metadata["steps_list"][0]
         elif self.metadata["sweep_dimension"] > 2:
@@ -103,7 +112,7 @@ class LabberFile:
             )
         elif self.metadata["sweep_dimension"] == 2:
             new_shape = data[:, 0, :].shape
-        '''
+        """
 
         new_shape = self.metadata["steps_list"]
 
