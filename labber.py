@@ -7,12 +7,19 @@ def _decode_if_necessary(input_):
         return input_.decode()
     return input_
 
+def _multiply_steps(steps_list):
+    prod = 1
+    for step in steps_list:
+        prod *= step
+    return prod
+
 
 class LabberFile:
     def __init__(self, file_name: str):
         self._h5handle = h5.File(file_name)
         self.metadata = {"file": self._h5handle.filename}
         self._initVariables()
+        self._initVarInfo()
         self._initRawData()
 
     def _initVariables(self) -> None:
@@ -31,7 +38,6 @@ class LabberFile:
             if _decode_if_necessary(var[0]) not in stepped
         }
         self.variables = stepped | fixed | logged
-        self._initVarInfo()
 
     def _initVarInfo(self) -> None:
 
@@ -115,6 +121,15 @@ class LabberFile:
         """
 
         new_shape = self.metadata["steps_list"]
+
+        missing_rows = _multiply_steps(new_shape[1:]) - data.shape[2]
+        if missing_rows > 0:
+            filler = np.full(
+                (data.shape[0], data.shape[1], missing_rows),
+                np.nan,
+                order="F"
+            )
+            data = np.append(data, filler, axis=2)
 
         for k, var in self.variables.items():
 
